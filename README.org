@@ -1,0 +1,43 @@
+#+title: Readme
+
+* Overview
+
+Adhara is an app to create a manage class plans.
+
+Features:
+- Create courses.
+- Define a syllabus for a set of courses.
+- Schedule the syllabus elements for each course following that syllabus.
+- Copy courses.
+- Automatically copy courses from one year to the next one.
+
+* Syllabus
+
+A /syllabus/ is a coherent and ordered collection of learning goals, activities and assessments, related to a specific knowledge area.
+
+A /syllabus sequencing/ is a sequence of the items comprising the syllabus. Several /syllabus sequencings/ can be made for the same syllabus.
+
+* Courses
+
+A /course/ is the process of delivering a syllabus sequencing to a set of students in a specific period of time (usually, an academic year).
+
+A /course log/ is a record of items delivered.
+
+Each course has a /Next item pointer/ which points to the item in the syllabus sequencing which is after the last delivered item.
+
+A /course schedule/ consists in a sequence of lessons. Each lesson has an index that specifies the order of the lesson in the sequence. Each lesson is assign to a date.
+
+* Course teaching and syllabus delivery
+
+To teach a course is the act of delivering the items of its syllabus sequencing.
+
+An item can be in one of these states:
+- Pending
+- Delivered
+
+Teaching goes like this. The item point at by the next item pointer is shown. It can be:
+- Taught: item's status is changed to delivered; a log entry is written with the date of the delivery.
+- Skipped: the item is removed from the sequence; a log entry is written.
+- Delayed: the item is moved to a later location in the sequence.
+
+There should be tools for checking which items of the syllabus are in the sequence, and which are not.
