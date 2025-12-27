@@ -1,0 +1,83 @@
+{% extends "syllabooster/base.html" %}
+
+{% block title %}Course Contents{% endblock %}
+
+{% block content %}
+    <div class="box is-sticky">{{ course.name }} <span id="current-position" data-current-position="{{ course.current_position }}">({{ course.current_position }})</span></div>
+
+    <div class="columns">
+        <div class="column is-full">
+            {% for point in object_list %}
+                <div class="coursepointfield field has-addons">
+                    <p class="control">
+                        <button id="caret-{{ point.id }}" class="button {{ point.state.css_class }}">
+                            <span class="icon"><i class="fa-solid fa-caret-right"></i></span>
+                        </button>
+                    </p>
+                    <p class="control" style="width: 100%;">
+                        <button id="button-{{ point.id}}" class="coursepointbutton button is-fullwidth is-justify-content-flex-start is-multiline {{ point.state.css_class }}"
+                                data-point-id="{{ point.id }}"
+                                data-position="{{ point.position }}"
+                                data-css-classes-str="{{ point.state.css_class }}">
+                                <span class="icon">
+                                    <i class="{{ point.point.point_type.icon }}"></i>
+                                </span>
+                                <span>{{ point.point.headline }}</span>
+                        </button>
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script type="text/javascript">
+     const currentPositionLabel = document.getElementById("current-position");
+     const currentPosition = currentPositionLabel.dataset.currentPosition;
+     const elementToScrollTo = document.querySelector(`[data-position="${currentPosition}"]`);
+     console.log(elementToScrollTo);
+     if (elementToScrollTo) {
+         elementToScrollTo.scrollIntoView({
+             behavior: "smooth",
+             block: "center"
+         });
+     }
+     document.querySelectorAll(".coursepointbutton").forEach(button => {
+         const coursepointId = button.dataset.pointId;
+         const caret = document.getElementById(`caret-${coursepointId}`);
+         button.addEventListener("click", function (event) {
+             const clickedButton = this;
+             fetch("{% url 'syllabooster:cyclestate' %}", {
+                 method: "POST",
+                 headers: {
+                     "Content-type": "application/json",
+                     "X-CSRFToken": "{{ csrf_token }}"
+                 },
+                 body: JSON.stringify({
+                     coursepointId: coursepointId
+                 })
+             }).then(response => {
+                 if (!response.ok) {
+                     alert("Error cycling status");
+                 }
+                 return response.json();
+             }).then(data => {
+                 const cssClassesStr = clickedButton.dataset.cssClassesStr ? clickedButton.dataset.cssClassesStr : "";
+                 const cssClasses = cssClassesStr.split(" ").filter(c => c.trim());
+                 cssClasses.forEach(cssClass => {
+                     clickedButton.classList.remove(cssClass);
+                     caret.classList.remove(cssClass);
+                 });
+                 data.cssClassesStr.split(" ").filter(c => c.trim()).forEach(cssClass => {
+                     clickedButton.classList.add(cssClass);
+                     caret.classList.add(cssClass);
+                 });
+                 clickedButton.dataset.cssClassesStr = data.cssClassesStr;
+                 currentPositionLabel.innerHTML = `(${data.currentPosition})`;
+             }).catch(error => {
+                 alert("Error cycling status: " + error);
+             });
+         });
+     });
+    </script>
+
+{% endblock %}

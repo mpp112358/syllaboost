@@ -1,0 +1,52 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{% block title %}Syllaboost{% endblock %}</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">
+            You are using an <strong>outdated</strong> browser. Please
+            <a href="http://browsehappy.com/">upgrade your browser</a> to improve
+            your experience.
+            </p>
+        <![endif]-->
+
+        <style>
+         .button.is-multiline {
+             white-space: normal;
+             height: 100%;           /* stretch to full column height */
+             line-height: 1.2;
+             text-align: center;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+         }
+
+         .is-sticky {
+             display: flex;
+             align-items: center;
+             position: sticky;
+             top: 0;                 /* stick to the top of the viewport */
+             z-index: 10;            /* make sure it stays above other content */
+             border-bottom: 1px solid #ddd; /* optional visual separator */
+         }
+        </style>
+
+       <main class="container">
+           {% block content %}{% endblock %}
+       </main>
+
+    </body>
+</html>

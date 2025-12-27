@@ -21,4 +21,5 @@ from django.urls import include, path
 urlpatterns = [
     path("", include("syllabooster.urls")),
     path("admin/", admin.site.urls),
+    path("accounts/", include("allauth.urls")),
 ]

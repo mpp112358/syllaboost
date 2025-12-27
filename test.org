@@ -1,0 +1,154 @@
+#+title: Test
+#+TODO: PENDING(p) | DELIVERED(d)
+#+TODO: UNASSIGNED(u) ASSIGNED(a) | REVIEWED(r)
+
+* Tema 5: Geometría Analítica :geometría:
+** PENDING Definición algebraica de vector libre :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Definición de $\mathbb{R}^{2}$ :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Definición geométrica de vector libre :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Relación entre definiciones algebraica y geométrica de un vector libre :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Suma de vectores libres: definición algebraica :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Suma de vectores libres: interpretación geométrica :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Producto de un escalar por un vector libre: definición algebraica :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Producto de un escalar por un vector libre: interpretación geométrica :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** UNASSIGNED Ejercicio 131.3 :vectores:
+:PROPERTIES:
+:TYPE:     exercise
+:END:
+** PENDING Vector unitario :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Normalizar un vector :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** UNASSIGNED Ejercicio 131.8 :vectores:
+:PROPERTIES:
+:TYPE:     exercise
+:END:
+** PENDING Combinación lineal :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Dependencia lineal :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** UNASSIGNED Ejercicio 131.4 :vectores:
+:PROPERTIES:
+:TYPE:     exercise
+:END:
+** PENDING Definición de base :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Coordenadas de un vector respecto de una base :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Base canónica :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** UNASSIGNED Ejercicio 131.6 :vectores:
+:PROPERTIES:
+:TYPE:     exercise
+:END:
+** UNASSIGNED Ejercicio 131.7 :vectores:
+:PROPERTIES:
+:TYPE:     exercise
+:END:
+** UNASSIGNED Ejercicio 131.10 :vectores:
+:PROPERTIES:
+:TYPE:     exercise
+:END:
+** UNASSIGNED Ejercicio 131.11 :vectores:
+:PROPERTIES:
+:TYPE:     exercise
+:END:
+** PENDING Definición algebraica de producto escalar :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Definición geométrica de producto escalar :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Propiedades del producto escalar :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+- Conmutativa
+- Homogénea
+- Positividad
+- Distributiva
+- Ortogonalidad
+- Paralelismo
+** PENDING Ángulo entre dos vectores :vectores:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+
+** PENDING Ecuaciones de la recta :recta:
+:PROPERTIES:
+:TYPE:     theory
+:END:
+
+* Tema 6: Funciones :análisis:
+** PENDING Concepto de función
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Definición de dominio de una función
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Definición de recorrido de una función
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Cálculo analítico del dominio de funciones elementales
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Cálculo gráfico del recorrido de funciones
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Puntos de corte con los ejes
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Paridad de una función
+:PROPERTIES:
+:TYPE:     theory
+:END:
+** PENDING Definición de función periódica
+:PROPERTIES:
+:TYPE:     theory
+:END:
