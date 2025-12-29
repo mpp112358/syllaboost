@@ -1,3 +1,5 @@
+[tool.uv]
+cache-dir = "./.uv-cache"
 [project]
 name = "syllaboost"
 version = "0.1.0"

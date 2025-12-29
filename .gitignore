@@ -15,3 +15,6 @@ wheels/
 # Static and media
 /static/
 /media/
+
+# uv cache
+.uv-cache/
