@@ -1,0 +1,51 @@
+name: Deploy Syllaboost to Sirio
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the latest code from GitHub
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Set up SSH for VPS
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.VPS_KEY }}
+
+      # 3. Deploy to VPS
+      - name: Deploy to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no manu@${{ secrets.VPS_HOST }} << 'EOF'
+            set -e  # Exit on first error
+
+            PROJECT_PATH=${{ secrets.PROJECT_PATH }}
+
+            echo "Deploying project to $PROJECT_PATH"
+            cd $PROJECT_PATH
+
+            # 3a. Pull latest code as syllabus user
+            sudo -u syllabus git fetch --all
+            sudo -u syllabus git reset --hard origin/main
+
+            # 3b. Sync dependencies using uv
+            sudo -u syllabus uv sync
+
+            # 3c. Run Django migrations
+            sudo -u syllabus uv run manage.py migrate --noinput
+
+            # 3d. Collect static files
+            sudo -u syllabus uv run manage.py collectstatic --noinput
+
+            # 3e. Restart Gunicorn service
+            sudo systemctl restart syllaboost-gunicorn
+
+            echo "Deployment completed successfully"
+          EOF
