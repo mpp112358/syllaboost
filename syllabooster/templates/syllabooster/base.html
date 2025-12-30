@@ -26,6 +26,18 @@
         <![endif]-->
 
         <style>
+         html, body {
+             height: 100%;
+             margin: 0;
+         }
+
+         main {
+             height: 100vh;
+             overflow-y: auto;
+             display: flex;
+             flex-direction: column;
+         }
+
          .button.is-multiline {
              white-space: normal;
              height: 100%;           /* stretch to full column height */
@@ -44,9 +56,10 @@
              z-index: 10;            /* make sure it stays above other content */
              border-bottom: 1px solid #ddd; /* optional visual separator */
          }
+
         </style>
 
-       <main class="container">
+       <main>
            {% block content %}{% endblock %}
        </main>
 

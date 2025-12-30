@@ -6,7 +6,7 @@ from django.contrib.auth.views import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
 from django.db.models import Max, Min, OuterRef, Subquery
 from django.conf import settings
@@ -84,6 +84,7 @@ def cycle_state(request):
         state = coursepoint.state
         next_state = state
         current_position = coursepoint.course.current_position
+        done = False
         if state:
             num_states = (
                 DeliveryState.objects.filter(point_type_id=point_type.id).aggregate(
@@ -98,15 +99,18 @@ def cycle_state(request):
             coursepoint.state = next_state
             coursepoint.save()
             current_position = update_course_current_position(coursepoint.course)
+            done = next_state_position == num_states
 
         return JsonResponse(
             {
                 "status": "ok",
                 "coursepointId": coursepoint_id,
-                "stateId": next_state.id,
+                "stateId": next_state.pk,
                 "statePosition": next_state.position,
+                "stateDisplayName": next_state.display_name,
                 "cssClassesStr": next_state.css_class if next_state else "",
                 "currentPosition": current_position,
+                "done": done,
             }
         )
 
@@ -191,7 +195,7 @@ class UnitView(LoginRequiredMixin, CustomUserPassesTestMixin, ListView):
         return context
 
 
-class CurrentUnitView(ListView):
+class CurrentUnitView(LoginRequiredMixin, CustomUserPassesTestMixin, ListView):
     model = CoursePoint
     template_name = "syllabooster/unitcoursepoint_list.html"
 
@@ -210,6 +214,33 @@ class CurrentUnitView(ListView):
         context = super().get_context_data(**kwargs)
         context["course"] = self.course
         context["unit"] = self.unit
+        return context
+
+
+class CoursePointView(LoginRequiredMixin, CustomUserPassesTestMixin, DetailView):
+    model = CoursePoint
+    template_name = "syllabooster/coursepoint_detail.html"
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.course.user == self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        obj = self.get_object()
+        previous_position = obj.position - 1 if obj.position > 1 else 1
+        max_position = CoursePoint.objects.filter(course=obj.course).aggregate(
+            Max("position")
+        )["position__max"]
+        next_position = (
+            obj.position + 1 if obj.position < max_position else max_position
+        )
+        context["previous_point"] = CoursePoint.objects.filter(
+            course=obj.course, position=previous_position
+        )[0].id
+        context["next_point"] = CoursePoint.objects.filter(
+            course=obj.course, position=next_position
+        )[0].id
         return context
 
 

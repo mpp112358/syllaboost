@@ -13,5 +13,10 @@ urlpatterns = [
     path("unitlist/<course>/", views.UnitListView.as_view(), name="unitlist"),
     path("unit/<course>/<unit>/", views.UnitView.as_view(), name="unit"),
     path("currentunit/<course>/", views.CurrentUnitView.as_view(), name="currentunit"),
+    path(
+        "coursepointdetail/<int:pk>/",
+        views.CoursePointView.as_view(),
+        name="coursepointdetail",
+    ),
     path("cyclestate/", views.cycle_state, name="cyclestate"),
 ]

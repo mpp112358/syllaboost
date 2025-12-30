@@ -1,0 +1,79 @@
+{% extends 'syllabooster/base.html' %}
+
+{% block title %}Point Detail{% endblock %}
+
+{% block content %}
+
+    <header class="fill fixed top">
+        <nav>
+            <a class="button circle transparent"
+            href="{% url 'syllabooster:courselist' %}">
+                <i>home</i>
+            </a>
+            <a class="button circle transparent"
+               href="{% url 'syllabooster:coursepointdetail' previous_point %}">
+                <i>arrow_back</i>
+            </a>
+            <a class="max center-align"
+               href="{% url 'syllabooster:currentunit' coursepoint.course.id %}">
+                <h6>{{ coursepoint.unit.title }}</h6>
+            </a>
+            <a class="button circle transparent"
+            href="{% url 'syllabooster:coursepointdetail' next_point %}">
+                <i>arrow_forward</i>
+            </a>
+        </nav>
+    </header>
+
+    <article id="coursepoint-section" class="{{ coursepoint.state.css_class }}">
+        <h6>{{ coursepoint.point.headline }}</h6>
+        <p id="coursepoint-contents"></p>
+        <nav>
+            <button id="next-state-button"
+                    class="small-elevate {{ coursepoint.state.css_class }}"
+                    data-css-classes-str="{{ coursepoint.state.css_class }}"></button>
+        </nav>
+    </article>
+
+    <script type="text/javascript">
+     html = '{{ coursepoint.point.contents | safe }}';
+     document.getElementById("coursepoint-contents").setHTMLUnsafe(html);
+     const nextStateButton = document.getElementById("next-state-button");
+     const coursePointSection = document.getElementById("coursepoint-section");
+     nextStateButton.innerHTML = "{{ coursepoint.state.display_name }}";
+     nextStateButton.addEventListener("click", function () {
+         fetch("{% url 'syllabooster:cyclestate' %}", {
+             method: "POST",
+             headers: {
+                 "Content-type": "application/json",
+                 "X-CSRFToken": "{{ csrf_token }}"
+             },
+             body: JSON.stringify({
+                 coursepointId: {{ coursepoint.pk }}
+             })
+         }).then(response => {
+             if (!response.ok) {
+                 alert("Error cycling status");
+             }
+             return response.json();
+         }).then(data => {
+             nextStateButton.innerHTML = data.stateDisplayName;
+             const cssClassesStr = nextStateButton.dataset.cssClassesStr ? nextStateButton.dataset.cssClassesStr : "";
+             const cssClasses = cssClassesStr.split(" ").filter(c => c.trim());
+             cssClasses.forEach(cssClass => {
+                 nextStateButton.classList.remove(cssClass);
+                 coursePointSection.classList.remove(cssClass);
+             });
+             data.cssClassesStr.split(" ").filter(c => c.trim()).forEach(cssClass => {
+                 nextStateButton.classList.add(cssClass);
+                 coursePointSection.classList.add(cssClass);
+             });
+             nextStateButton.dataset.cssClassesStr = data.cssClassesStr;
+         }).catch(error => {
+             alert("Error cycling status: " + error);
+         });
+
+     });
+    </script>
+
+{% endblock %}

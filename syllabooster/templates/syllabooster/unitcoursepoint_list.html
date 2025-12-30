@@ -3,55 +3,55 @@
 {% block title %}Unit Contents{% endblock %}
 
 {% block content %}
-    <div class="container is-sticky" style="margin: 5px 0px 5px 0px;">
-        <div class="field has-addons" style="width: 100%;">
-            <p class="control">
-                <a class="button is-narrow is-link"
-                   href="{% url 'syllabooster:courselist' %}">
-                    <span class="icon"><i class="fa-solid fa-home"></i></span>
-                </a>
-            </p>
-            <p class="control" style="width: 100%;">
-                <a class="button is-fullwidth is-info"
-                   href="{% url 'syllabooster:currentunit' course.id %}">
-                    {{ course.name }} {{ unit.title }}
-                    <span id="current-position" data-current-position="{{ course.current_position }}">
-                    </span>
-                </a>
-            </p>
-            <p class="control">
-                <a class="button is-narrow is-info is-outlined"
-                   href="{% url 'syllabooster:unitlist' course.id %}">
-                    <span class="icon"><i class="fa-solid fa-list"></i></span>
-                </a>
-            </p>
-        </div>
-    </div>
-
-    <div class="columns">
-        <div class="column is-full">
-            {% for point in object_list %}
-                <div class="coursepointfield field has-addons">
-                    <p class="control">
-                        <button id="caret-{{ point.id }}" class="button {{ point.state.css_class }}">
-                            <span class="icon"><i class="fa-solid fa-caret-right"></i></span>
-                        </button>
-                    </p>
-                    <p class="control" style="width: 100%;">
-                        <button id="button-{{ point.id}}" class="coursepointbutton button is-fullwidth is-justify-content-flex-start is-multiline {{ point.state.css_class }}"
-                                data-point-id="{{ point.id }}"
-                                data-position="{{ point.position }}"
-                                data-css-classes-str="{{ point.state.css_class }}">
-                                <span class="icon">
-                                    <i class="{{ point.point.point_type.icon }}"></i>
-                                </span>
-                                <span>{{ point.point.headline }}</span>
-                        </button>
-                    </p>
+    <header class="fill fixed top">
+        <nav>
+            <a class="button circle transparent"
+               href="{% url 'syllabooster:courselist' %}">
+                <i>home</i>
+            </a>
+            <a class="max center-align "
+               href="{% url 'syllabooster:currentunit' course.id %}">
+                <div class="max">
+                <h7 class="small">{{ unit.title }}</h7>
+                <div>{{ course.name }}</div>
                 </div>
+                <span id="current-position"
+                      data-current-position="{{ course.current_position }}">
+                </span>
+            </a>
+            <a class="button circle transparent"
+               href="{% url 'syllabooster:unitlist' course.id %}">
+                <i>list</i>
+            </a>
+        </nav>
+    </header>
+
+        <div class="list max no-space no-padding">
+            {% for point in object_list %}
+                <li>
+                    <div class="max">
+                        <header id="caret-{{ point.id }}" class="{{ point.state.css_class }}">
+                            <nav>
+                                <i class="{{ point.point.point_type.icon }}"></i>
+                                <div class="coursepointheadline max"
+                                     data-url="{% url 'syllabooster:coursepointdetail' point.pk %}">
+                                    <p class="left-align responsive">
+                                        {{ point.point.headline }}
+                                    </p>
+                                </div>
+                                <button id="button-{{ point.id }}"
+                                        class="coursepointbutton square  responsive {{ point.state.css_class }}"
+                                        data-point-id="{{ point.id }}"
+                                        data-position="{{ point.position }}"
+                                        data-css-classes-str="{{ point.state.css_class }}">
+                                    <i>check_circle</i>
+                                </button>
+                            </nav>
+                        </header>
+                    </div>
+                </li>
             {% endfor %}
         </div>
-    </div>
 
     <script type="text/javascript">
      const currentPositionLabel = document.getElementById("current-position");
@@ -64,6 +64,12 @@
              block: "center"
          });
      }
+     document.querySelectorAll(".coursepointheadline").forEach(headline => {
+         const url = headline.dataset.url;
+         headline.addEventListener("click", function () {
+             window.location.href = url;
+         });
+     });
      document.querySelectorAll(".coursepointbutton").forEach(button => {
          const coursepointId = button.dataset.pointId;
          const caret = document.getElementById(`caret-${coursepointId}`);
@@ -102,5 +108,6 @@
          });
      });
     </script>
+
 
 {% endblock %}

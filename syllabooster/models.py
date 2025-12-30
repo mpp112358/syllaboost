@@ -27,7 +27,7 @@ class DeliveryState(models.Model):
     name = models.CharField(max_length=50)
     display_name = models.CharField(max_length=100, blank=True)
     description = models.TextField(blank=True)
-    css_class = models.CharField(max_length=50, blank=True)
+    css_class = models.CharField(max_length=200, blank=True)
 
     class Meta:
         unique_together = ["point_type", "name"]
