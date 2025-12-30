@@ -27,7 +27,7 @@
 
     <article id="coursepoint-section" class="{{ coursepoint.state.css_class }}">
         <h6>{{ coursepoint.point.headline }}</h6>
-        <p id="coursepoint-contents"></p>
+        <p id="coursepoint-contents">{{ html_content }}</p>
         <nav>
             <button id="next-state-button"
                     class="small-elevate {{ coursepoint.state.css_class }}"
@@ -36,8 +36,6 @@
     </article>
 
     <script type="text/javascript">
-     html = '{{ coursepoint.point.contents | safe }}';
-     document.getElementById("coursepoint-contents").setHTMLUnsafe(html);
      const nextStateButton = document.getElementById("next-state-button");
      const coursePointSection = document.getElementById("coursepoint-section");
      nextStateButton.innerHTML = "{{ coursepoint.state.display_name }}";

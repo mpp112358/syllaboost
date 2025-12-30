@@ -1,7 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
+from markdown_it import MarkdownIt
+import bleach
+
+
+md = MarkdownIt("commonmark", {"html": False})
 
 
 class Tag(models.Model):
@@ -38,11 +42,59 @@ class DeliveryState(models.Model):
 
 class Point(models.Model):
     headline = models.CharField(max_length=200)
-    contents = models.TextField(blank=True)
+    contents = models.TextField(
+        blank=True,
+        help_text="Write contents in MarkDown. Use $...$ for inline math and $$...$$ for display math.",
+    )
     tags = models.ManyToManyField(Tag)
     point_type = models.ForeignKey(
         PointType, on_delete=models.PROTECT, related_name="points", null=True
     )
+
+    def get_html(self):
+        """Convert markdown in 'contents' field to HTML and sanitize."""
+        html = md.render(self.contents)
+        clean_html = bleach.clean(
+            html,
+            tags=[
+                "p",
+                "br",
+                "strong",
+                "em",
+                "a",
+                "ul",
+                "ol",
+                "li",
+                "h1",
+                "h2",
+                "h3",
+                "h4",
+                "h5",
+                "h6",
+                "code",
+                "pre",
+                "blockquote",
+                "hr",
+                "table",
+                "thead",
+                "tbody",
+                "tr",
+                "th",
+                "td",
+                "span",
+                "div",
+                "img",
+            ],
+            attributes={
+                "a": ["href", "title"],
+                "img": ["src", "alt", "title"],
+                "code": ["class"],
+                "span": ["class"],
+                "div": ["class"],
+            },
+            strip=True,
+        )
+        return clean_html
 
     def __str__(self):
         return str(self.headline)

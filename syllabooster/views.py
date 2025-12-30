@@ -6,6 +6,7 @@ from django.contrib.auth.views import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.utils.safestring import mark_safe
 from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
 from django.db.models import Max, Min, OuterRef, Subquery
@@ -241,6 +242,7 @@ class CoursePointView(LoginRequiredMixin, CustomUserPassesTestMixin, DetailView)
         context["next_point"] = CoursePoint.objects.filter(
             course=obj.course, position=next_position
         )[0].id
+        context["html_content"] = mark_safe(obj.point.get_html())
         return context
 
 
