@@ -9,10 +9,9 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("unauthorised/", views.unauthorised, name="unauthorised"),
     path("courselist/", views.CourseListView.as_view(), name="courselist"),
-    path("course/<course>/", views.CourseView.as_view(), name="course"),
     path("unitlist/<course>/", views.UnitListView.as_view(), name="unitlist"),
     path("unit/<course>/<unit>/", views.UnitView.as_view(), name="unit"),
-    path("currentunit/<course>/", views.CurrentUnitView.as_view(), name="currentunit"),
+    path("currentunit/<course>/", views.currentView, name="currentunit"),
     path(
         "coursepointdetail/<int:pk>/",
         views.CoursePointView.as_view(),

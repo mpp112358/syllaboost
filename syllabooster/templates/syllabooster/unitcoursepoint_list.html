@@ -32,7 +32,11 @@
                     <div class="max">
                         <header id="caret-{{ point.id }}" class="{{ point.state.css_class }}">
                             <nav>
-                                <i class="{{ point.point.point_type.icon }}"></i>
+                                {% if point.point.point_type.name == "exercise" %}
+                                    <i class="{{ point.point.point_type.icon }}"></i>
+                                {% else %}
+                                    <div class="badge none">{{ point.type_relative_position }}</div>
+                                {% endif %}
                                 <div class="coursepointheadline max"
                                      data-url="{% url 'syllabooster:coursepointdetail' point.pk %}">
                                     <p class="left-align responsive">

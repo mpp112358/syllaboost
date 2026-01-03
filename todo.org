@@ -1,0 +1,26 @@
+* Inbox
+** TODO Add progress bars to courses and units
+
+[[file:~/gredos/1projects/syllaboost/syllabooster/templates/syllabooster/unitcoursepoint_list.html::<!-- </button> -->]]
+** TODO Add UI for importing org files
+
+[[file:/Users/manu/gredos/1projects/syllaboost/]]
+** TODO Add tests
+
+[[file:~/gredos/1projects/syllaboost/test.md]]
+** TODO Add export to org functionality
+
+[[file:~/gredos/1projects/syllaboost/syllabooster]]
+** TODO Add SCHEDULED field to Points model and show it in point views
+
+[[file:~/gredos/1projects/syllaboost/syllabooster]]
+** TODO Show point numbers on list and detail views
+:LOGBOOK:
+CLOCK: [2026-01-03 Sat 16:24]
+:END:
+- [X] Create a function to compute /relative number/ (like 5.2)
+- [X] Add the /relative number/ to the query given by the view
+- [ ] Look into different positions for the number
+
+[[file:~/gredos/1projects/syllaboost/syllabooster]]
+** TODO Remove redundant views of lists of points

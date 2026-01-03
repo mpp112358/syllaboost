@@ -1,16 +1,17 @@
 import json
 
-from django.contrib.auth import user_logged_in
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.views import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
+from django.http import JsonResponse
 from django.utils.safestring import mark_safe
 from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
-from django.db.models import Max, Min, OuterRef, Subquery
+from django.db.models import Max, Min, OuterRef, Subquery, F, Window
+from django.db.models.functions import RowNumber
 from django.conf import settings
+from django.urls import reverse
 
 from .models import (
     Tag,
@@ -121,7 +122,7 @@ def cycle_state(request):
 
 @login_required
 def index(request):
-    return HttpResponseRedirect("/courselist/")
+    return redirect(reverse("syllabooster:courselist"))
 
 
 class CourseListView(LoginRequiredMixin, ListView):
@@ -154,26 +155,6 @@ class UnitListView(LoginRequiredMixin, CustomUserPassesTestMixin, ListView):
         return context
 
 
-class CourseView(LoginRequiredMixin, CustomUserPassesTestMixin, ListView):
-    model = CoursePoint
-    template_name = "syllabooster/coursepoint_list.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.course = get_object_or_404(Course, id=self.kwargs["course"])
-
-    def test_func(self):
-        return self.course.user == self.request.user
-
-    def get_queryset(self):
-        return CoursePoint.objects.filter(course=self.course)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["course"] = self.course
-        return context
-
-
 class UnitView(LoginRequiredMixin, CustomUserPassesTestMixin, ListView):
     model = CoursePoint
     template_name = "syllabooster/unitcoursepoint_list.html"
@@ -187,7 +168,20 @@ class UnitView(LoginRequiredMixin, CustomUserPassesTestMixin, ListView):
         return self.course.user == self.request.user
 
     def get_queryset(self):
-        return CoursePoint.objects.filter(course=self.course, unit=self.unit)
+        min_position = CoursePoint.objects.filter(
+            course=self.course, unit=self.unit
+        ).aggregate(Min("position"))["position__min"]
+        return (
+            CoursePoint.objects.filter(course=self.course, unit=self.unit)
+            .annotate(relative_position=F("position") - min_position + 1)
+            .annotate(
+                type_relative_position=Window(
+                    expression=RowNumber(),
+                    partition_by=[F("point__point_type")],
+                    order_by=F("position").asc(),
+                )
+            )
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -196,26 +190,12 @@ class UnitView(LoginRequiredMixin, CustomUserPassesTestMixin, ListView):
         return context
 
 
-class CurrentUnitView(LoginRequiredMixin, CustomUserPassesTestMixin, ListView):
-    model = CoursePoint
-    template_name = "syllabooster/unitcoursepoint_list.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.course = get_object_or_404(Course, id=self.kwargs["course"])
-        self.unit = get_course_current_unit(self.course)
-
-    def test_func(self):
-        return self.course.user == self.request.user
-
-    def get_queryset(self):
-        return CoursePoint.objects.filter(course=self.course, unit=self.unit)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["course"] = self.course
-        context["unit"] = self.unit
-        return context
+def currentView(request, course):
+    course_obj = get_object_or_404(Course, id=course)
+    unit = get_course_current_unit(course_obj)
+    unit_id = unit.id
+    url = reverse("syllabooster:unit", kwargs={"course": course, "unit": unit_id})
+    return redirect(url)
 
 
 class CoursePointView(LoginRequiredMixin, CustomUserPassesTestMixin, DetailView):
