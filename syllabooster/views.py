@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.utils.safestring import mark_safe
 from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
-from django.db.models import Max, Min, OuterRef, Subquery, F, Window
+from django.db.models import Max, Min, OuterRef, Subquery, F, Window, Count
 from django.db.models.functions import RowNumber
 from django.conf import settings
 from django.urls import reverse
@@ -209,6 +209,12 @@ class CoursePointView(LoginRequiredMixin, CustomUserPassesTestMixin, DetailView)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         obj = self.get_object()
+        context["type_relative_position"] = CoursePoint.objects.filter(
+            course=obj.course,
+            unit=obj.unit,
+            point__point_type=obj.point.point_type,
+            position__lte=obj.position,
+        ).count()
         previous_position = obj.position - 1 if obj.position > 1 else 1
         max_position = CoursePoint.objects.filter(course=obj.course).aggregate(
             Max("position")

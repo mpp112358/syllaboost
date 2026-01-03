@@ -1,4 +1,10 @@
 * Inbox
+** TODO Redesign coursepoint_detail template to make navigation easier
+I may add a second nav bar with navigation buttons, or something
+[[file:~/gredos/1projects/syllaboost/syllabooster/templates/syllabooster/coursepoint_detail.html::},]]
+** TODO Clean up templates (some aren't used)
+
+[[file:~/gredos/1projects/syllaboost/syllabooster/templates/syllabooster/coursepoint_detail.html::data-css-classes-str="{{ coursepoint.state.css_class }}"></button>]]
 ** TODO Add progress bars to courses and units
 
 [[file:~/gredos/1projects/syllaboost/syllabooster/templates/syllabooster/unitcoursepoint_list.html::<!-- </button> -->]]

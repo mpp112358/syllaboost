@@ -7,10 +7,6 @@
     <header class="fill fixed top">
         <nav>
             <a class="button circle transparent"
-            href="{% url 'syllabooster:courselist' %}">
-                <i>home</i>
-            </a>
-            <a class="button circle transparent"
                href="{% url 'syllabooster:coursepointdetail' previous_point %}">
                 <i>arrow_back</i>
             </a>
@@ -25,6 +21,9 @@
         </nav>
     </header>
 
+    <header class="fill">
+                <div class="badge none">{{ type_relative_position }}</div>
+    </header>
     <article id="coursepoint-section" class="{{ coursepoint.state.css_class }}">
         <h6>{{ coursepoint.point.headline }}</h6>
         <p id="coursepoint-contents">{{ html_content }}</p>
