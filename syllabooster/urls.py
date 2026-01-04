@@ -18,4 +18,9 @@ urlpatterns = [
         name="coursepointdetail",
     ),
     path("cyclestate/", views.cycle_state, name="cyclestate"),
+    path(
+        "api/importorg/",
+        views.api_import_org,
+        name="importorg",
+    ),
 ]

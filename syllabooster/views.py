@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from django.utils.safestring import mark_safe
 from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Max, Min, OuterRef, Subquery, F, Window, Count
 from django.db.models.functions import RowNumber
 from django.conf import settings
@@ -24,6 +25,8 @@ from .models import (
     CoursePoint,
     Unit,
 )
+
+from .utils import importstr
 
 
 def get_course_current_unit(course):
@@ -258,4 +261,17 @@ def google_login_get_credentials():
 
 
 def unauthorised(request):
-    return render(request, "/unauthorised.html")
+    return render(request, reverse("syllabooster:unauthorised"))
+
+
+@csrf_exempt
+@require_POST
+def api_import_org(request):
+    data = json.loads(request.body)
+    result = importstr.import_unit(
+        data["course_name"], data["input_string"], data["username"], "org"
+    )
+    if result and result["status"] == "ok":
+        return JsonResponse(result)
+    else:
+        return JsonResponse(result, status=400)

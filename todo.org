@@ -1,4 +1,19 @@
 * Inbox
+** TODO Handle "errors" in org origin when importing
+
+[[file:~/gredos/1projects/syllaboost/todo.org::*Add export to org functionality][Add export to org functionality]]
+** TODO Make import commands use the utils module (DRY)
+
+[[file:~/gredos/1projects/syllaboost/todo.org::*Add export to org functionality][Add export to org functionality]]
+** TODO Implement token protection for my public API
+
+[[file:~/gredos/1projects/syllaboost/todo.org::*Remove redundant views of lists of points][Remove redundant views of lists of points]]
+** TODO Add login_required to the api_import_org view
+
+[[file:~/gredos/1projects/syllaboost/syllabooster/views.py]]
+** TODO How to handle points without unit when importing from org
+
+[[file:~/gredos/1projects/syllaboost/syllabooster/utils/import.py]]
 ** TODO Redesign coursepoint_detail template to make navigation easier
 I may add a second nav bar with navigation buttons, or something
 [[file:~/gredos/1projects/syllaboost/syllabooster/templates/syllabooster/coursepoint_detail.html::},]]
@@ -14,19 +29,19 @@ I may add a second nav bar with navigation buttons, or something
 ** TODO Add tests
 
 [[file:~/gredos/1projects/syllaboost/test.md]]
-** TODO Add export to org functionality
+** DONE Add export to org functionality
 
 [[file:~/gredos/1projects/syllaboost/syllabooster]]
 ** TODO Add SCHEDULED field to Points model and show it in point views
 
 [[file:~/gredos/1projects/syllaboost/syllabooster]]
-** TODO Show point numbers on list and detail views
+** DONE Show point numbers on list and detail views
 :LOGBOOK:
-CLOCK: [2026-01-03 Sat 16:24]
+CLOCK: [2026-01-03 Sat 16:24]--[2026-01-04 Sun 13:13] => 20:49
 :END:
 - [X] Create a function to compute /relative number/ (like 5.2)
 - [X] Add the /relative number/ to the query given by the view
-- [ ] Look into different positions for the number
+- [X] Look into different positions for the number
 
 [[file:~/gredos/1projects/syllaboost/syllabooster]]
 ** TODO Remove redundant views of lists of points
