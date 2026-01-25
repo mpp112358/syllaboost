@@ -118,10 +118,11 @@ def parse_org(
                     point.tags.add(db_tag)
                     point.save()
 
+            point_position = int(node.get_property("POSITION")) or next_point
             coursepoint = CoursePoint(
                 course=course,
                 point=point,
-                position=next_point,
+                position=point_position,
                 state=state,
                 unit=unit,
             )
