@@ -119,6 +119,8 @@ def parse_org(
                     point.save()
 
             point_position = int(node.get_property("POSITION")) or next_point
+            if not (node.parent is root):
+                point_position = point_position + 1000 * node.parent.unit
             coursepoint = CoursePoint(
                 course=course,
                 point=point,
