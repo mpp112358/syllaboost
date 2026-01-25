@@ -128,7 +128,7 @@ def parse_org(
             )
             coursepoint.save()
             next_point = next_point + 1
-            renumber_points(course)
+            # renumber_points(course)
 
     return {"status": "ok", "units": f"{unitnumbers}"}
 
