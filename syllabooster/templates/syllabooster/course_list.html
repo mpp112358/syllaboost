@@ -16,7 +16,12 @@
                 <li>
                     <div class="max">
                         <nav class="group split">
-                            <a class="max button left-round secondary"
+                            <a class="button left-round secondary"
+                               href="{% url 'syllabooster:exportcourse'  %}?coursename={{ course.name|urlencode }}&username={{ user.get_username|urlencode }}">
+                                <i>arrow_downward</i>
+
+                            </a>
+                            <a class="max button no-round secondary"
                                href={% url 'syllabooster:currentunit' course.id %}>
                                 {{ course.name }}
                             </a>

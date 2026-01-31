@@ -23,4 +23,5 @@ urlpatterns = [
         views.api_import_org,
         name="importorg",
     ),
+    path("api/exportcourse/", views.api_export_org, name="exportcourse"),
 ]

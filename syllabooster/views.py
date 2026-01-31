@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.views import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, render, redirect
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils.safestring import mark_safe
 from django.views.generic import ListView, DetailView
 from django.views.decorators.http import require_POST
@@ -24,9 +24,11 @@ from .models import (
     Course,
     CoursePoint,
     Unit,
+    User,
 )
 
 from .utils import importstr
+from .utils.exportcourse import export_course_org
 
 
 def get_course_current_unit(course):
@@ -275,3 +277,31 @@ def api_import_org(request):
         return JsonResponse(result)
     else:
         return JsonResponse(result, status=400)
+
+
+@csrf_exempt
+def api_export_org(request):
+    username = request.GET.get("username")
+    if not username:
+        return JsonResponse(
+            {"status": "error", "message": "You must specify a username"}, status=400
+        )
+    coursename = request.GET.get("coursename")
+    if not coursename:
+        return JsonResponse(
+            {"status": "error", "message": "You must specify a course name"}, status=400
+        )
+    user = None
+    course = None
+    try:
+        user = User.objects.get(username=username)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)
+    try:
+        course = Course.objects.get(user=user, name=coursename)
+    except Exception as e:
+        return JsonResponse({"status": "error", "message": str(e)}, status=400)
+    result = export_course_org(course)
+    response = HttpResponse(result, content_type="text/org; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="course.org"'
+    return response
