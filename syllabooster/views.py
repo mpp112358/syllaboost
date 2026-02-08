@@ -36,8 +36,11 @@ def get_course_current_unit(course):
     print(f"Course current position: {course.current_position}")
     position = course.current_position if course.current_position > 0 else 1
     print(f"Position to look for: {position}")
-    current_point = CoursePoint.objects.get(course=course, position=position)
-    return current_point.unit
+    try:
+        current_point = CoursePoint.objects.get(course=course, position=position)
+        return current_point.unit
+    except CoursePoint.DoesNotExist:
+        return None
 
 
 def update_course_current_position(course):
@@ -198,8 +201,11 @@ class UnitView(LoginRequiredMixin, CustomUserPassesTestMixin, ListView):
 def currentView(request, course):
     course_obj = get_object_or_404(Course, id=course)
     unit = get_course_current_unit(course_obj)
-    unit_id = unit.id
-    url = reverse("syllabooster:unit", kwargs={"course": course, "unit": unit_id})
+    if unit:
+        unit_id = unit.id
+        url = reverse("syllabooster:unit", kwargs={"course": course, "unit": unit_id})
+    else:
+        url = reverse("syllabooster:unitlist", kwargs={"course": course})
     return redirect(url)
 
 
