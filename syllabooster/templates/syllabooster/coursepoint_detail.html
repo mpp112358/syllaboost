@@ -6,18 +6,22 @@
 
     <header class="fill fixed top">
         <nav>
+            {% if previous_point %}
             <a class="button circle transparent"
                href="{% url 'syllabooster:coursepointdetail' previous_point %}">
                 <i>arrow_back</i>
             </a>
+            {% endif %}
             <a class="max center-align"
                href="{% url 'syllabooster:currentunit' coursepoint.course.id %}">
                 <h6>{{ coursepoint.unit.title }}</h6>
             </a>
+            {% if next_point %}
             <a class="button circle transparent"
             href="{% url 'syllabooster:coursepointdetail' next_point %}">
                 <i>arrow_forward</i>
             </a>
+            {% endif %}
         </nav>
     </header>
 
