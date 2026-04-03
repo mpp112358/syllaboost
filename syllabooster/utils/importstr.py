@@ -118,7 +118,7 @@ def parse_org(
                     point.tags.add(db_tag)
                     point.save()
 
-            point_position = int(node.get_property("POSITION")) or next_point
+            point_position = int(node.get_property("POSITION") or next_point)
             if not (node.parent is root):
                 point_position = point_position + 1000 * node.parent.unit
             coursepoint = CoursePoint(
