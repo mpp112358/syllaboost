@@ -16,7 +16,7 @@ def export_course_org(course):
         points = CoursePoint.objects.filter(course=course, unit=unit)
         for point in points:
             point_tags = ""
-            if len(point.point.tags) > 0:
+            if point.point.tags.exists() > 0:
                 point_tags = " :"
             for tag in point.point.tags.all():
                 point_tags += f"{tag.name}:"
