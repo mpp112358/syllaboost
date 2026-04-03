@@ -16,8 +16,10 @@ def export_course_org(course):
         points = CoursePoint.objects.filter(course=course, unit=unit)
         for point in points:
             point_tags = ""
+            if len(point.point.tags) > 0:
+                point_tags = " :"
             for tag in point.point.tags.all():
-                point_tags += f" :{tag.name}:"
+                point_tags += f"{tag.name}:"
             content_lines = point.point.contents.splitlines()
             output += f"** {point.state.display_name} {point.point.headline} {point_tags}\n   :PROPERTIES:\n   :TYPE: {point.point.point_type}\n   :POSITION: {point.position}\n   :END:\n"
             for line in content_lines:
