@@ -226,8 +226,8 @@ class CoursePointView(LoginRequiredMixin, CustomUserPassesTestMixin, DetailView)
             point__point_type=obj.point.point_type,
             position__lte=obj.position,
         ).count()
-        context["previous_point"] = obj.previous_point().id
-        context["next_point"] = obj.next_point().id
+        context["previous_point"] = obj.previous_course_point().id
+        context["next_point"] = obj.next_course_point().id
         context["html_content"] = mark_safe(obj.point.get_html())
         return context
 
