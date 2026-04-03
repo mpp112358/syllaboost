@@ -276,7 +276,7 @@ def unauthorised(request):
 @require_POST
 def api_import_org(request):
     data = json.loads(request.body)
-    result = importstr.import_unit(
+    result = importstr.import_course(
         data["course_name"], data["input_string"], data["username"], "org"
     )
     if result and result["status"] == "ok":

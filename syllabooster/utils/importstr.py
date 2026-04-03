@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 from io import StringIO
+from collections import defaultdict
 
 from django.http import JsonResponse
 import orgparse
@@ -34,61 +35,44 @@ def should_be_imported(unit, unitnumbers):
     return True
 
 
+def is_unit(node):
+    return node.level and node.level == 1
+
+
+def is_point(node):
+    return node.level and node.level == 2
+
+
 def parse_org(
     course,
     input_string,
     user,
-    unitnumbers,
-    insert,
-    force,
     output=sys.stdout,
     styler=SyllaboostStyler(),
 ):
     root = orgparse.loads(input_string)
     current_unit = 0
-    next_point = 1
+    current_point_position_in_unit = defaultdict(int)
     unit_tags = {}
     unit = None
-    output.write(f"Unit numbers to be imported: {unitnumbers or 'all'}")
+    # Both units and points are imported in the order in which they are found in the org file.
+    # We expect the nodes in root[1:] to be stored in the order in which they were found in the file.
+    # TODO: check the above expectation is fulfilled by orgparse.
     for node in root[1:]:
-        if node.level == 1:
-            current_unit = int(node.get_property("POSITION"))
+        if is_unit(node):
+            current_unit += 1
             node.unit = current_unit
-            output.write(f'Found unit "{node.heading}" with position {current_unit}')
-            if should_be_imported(current_unit, unitnumbers):
-                output.write(f"Position {current_unit} should be imported.")
-                if Unit.objects.filter(course=course, position=current_unit).exists():
-                    if not insert:
-                        if not force:
-                            output.write(
-                                styler.WARNING(
-                                    f"There is already a unit with number {current_unit} in course {course.name} for user {user.username}: it will be replaced."
-                                )
-                            )
-                            confirm = input("Are you sure you want to proceed? [y/N]: ")
-                            if confirm.lower() not in ["y", "yes"]:
-                                output.write(styler.ERROR("Unit skipped."))
-                                continue
-                        Unit.objects.filter(
-                            course=course, position=current_unit
-                        ).delete()
-                    else:
-                        Unit.objects.filter(
-                            course=course, position__gte=current_unit
-                        ).update(position=F("position") + 10000)
-                        Unit.objects.filter(
-                            course, position__gte=current_unit + 10000
-                        ).update(position=F("position") - 9999)
-
-                unit = Unit.objects.create(
-                    course=course,
-                    position=current_unit,
-                    title=node.heading,
-                )
-                unit_tags[current_unit] = []
-                for tag in node.tags:
-                    unit_tags[current_unit].append(tag)
-        elif should_be_imported(current_unit, unitnumbers) and node.level == 2:
+            if Unit.objects.filter(course=course, position=current_unit).exists():
+                Unit.objects.filter(course=course, position=current_unit).delete()
+            unit = Unit.objects.create(
+                course=course,
+                position=current_unit,
+                title=node.heading,
+            )
+            unit_tags[current_unit] = []
+            for tag in node.tags:
+                unit_tags[current_unit].append(tag)
+        elif is_point(node):
             point_type = node.get_property("TYPE") or "Theory"
             output.write(f'Importing point "{node.heading}" of type {point_type}')
             point, created = Point.objects.get_or_create(headline=node.heading)
@@ -112,41 +96,36 @@ def parse_org(
                     unit = None
             if not (node.parent is root):
                 unit_position = node.parent.unit
+                current_point_position_in_unit[unit_position] += 1
+                point_position = (
+                    current_point_position_in_unit[unit_position] + 1000 * unit_position
+                )
                 unit = Unit.objects.get(course=course, position=unit_position)
                 for tag in unit_tags[unit_position]:
                     db_tag, created = Tag.objects.get_or_create(name=tag)
                     point.tags.add(db_tag)
                     point.save()
+                coursepoint = CoursePoint(
+                    course=course,
+                    point=point,
+                    position=point_position,
+                    state=state,
+                    unit=unit,
+                )
+                coursepoint.save()
 
-            point_position = int(node.get_property("POSITION") or next_point)
-            if not (node.parent is root):
-                point_position = point_position + 1000 * node.parent.unit
-            coursepoint = CoursePoint(
-                course=course,
-                point=point,
-                position=point_position,
-                state=state,
-                unit=unit,
-            )
-            coursepoint.save()
-            next_point = next_point + 1
-            # renumber_points(course)
-
-    return {"status": "ok", "units": f"{unitnumbers}"}
+    return {"status": "ok"}
 
 
-def parse_md(input_string, unitnumbers, insert=False, force=True):
+def parse_md(input_string):
     return {"status": "error", "message": "Not implemented"}
 
 
-def import_unit(
+def import_course(
     course_name,
     input_string,
     username,
     input_format,
-    unitnumbers=[],
-    insert=False,
-    force=True,
     output=sys.stdout,
     styler=SyllaboostStyler(),
 ):
@@ -159,8 +138,6 @@ def import_unit(
 
     course, created = Course.objects.get_or_create(name=course_name, user=user)
     if input_format == "md":
-        return parse_md(input_string, unitnumbers, insert, force)
+        return parse_md(input_string)
     elif input_format == "org":
-        return parse_org(
-            course, input_string, user, unitnumbers, insert, force, output, styler
-        )
+        return parse_org(course, input_string, user, output, styler)
