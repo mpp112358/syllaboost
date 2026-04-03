@@ -8,7 +8,7 @@
         <nav>
             {% if previous_point %}
             <a class="button circle transparent"
-               href="{% url 'syllabooster:coursepointdetail' previous_point %}">
+               href="{% url 'syllabooster:coursepointdetail' previous_point.id %}">
                 <i>arrow_back</i>
             </a>
             {% endif %}
@@ -18,7 +18,7 @@
             </a>
             {% if next_point %}
             <a class="button circle transparent"
-            href="{% url 'syllabooster:coursepointdetail' next_point %}">
+            href="{% url 'syllabooster:coursepointdetail' next_point.id %}">
                 <i>arrow_forward</i>
             </a>
             {% endif %}
