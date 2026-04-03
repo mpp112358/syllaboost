@@ -226,19 +226,8 @@ class CoursePointView(LoginRequiredMixin, CustomUserPassesTestMixin, DetailView)
             point__point_type=obj.point.point_type,
             position__lte=obj.position,
         ).count()
-        previous_position = obj.position - 1 if obj.position > 1 else 1
-        max_position = CoursePoint.objects.filter(course=obj.course).aggregate(
-            Max("position")
-        )["position__max"]
-        next_position = (
-            obj.position + 1 if obj.position < max_position else max_position
-        )
-        context["previous_point"] = CoursePoint.objects.filter(
-            course=obj.course, position=previous_position
-        )[0].id
-        context["next_point"] = CoursePoint.objects.filter(
-            course=obj.course, position=next_position
-        )[0].id
+        context["previous_point"] = obj.previous_point().id
+        context["next_point"] = obj.next_point().id
         context["html_content"] = mark_safe(obj.point.get_html())
         return context
 

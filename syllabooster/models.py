@@ -162,3 +162,17 @@ class CoursePoint(models.Model):
 
     def __str__(self):
         return f"{self.course}:{self.position}:{self.point}"
+
+    def previous_course_point(self):
+        return (
+            CoursePoint.objects.filter(position__lt=self.position)
+            .order_by("position")
+            .first()
+        )
+
+    def next_course_point(self):
+        return (
+            CoursePoint.objects.filter(position__gt=self.position)
+            .order_by("-position")
+            .first()
+        )
