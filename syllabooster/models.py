@@ -166,13 +166,13 @@ class CoursePoint(models.Model):
     def previous_course_point(self):
         return (
             CoursePoint.objects.filter(course=self.course, position__lt=self.position)
-            .order_by("position")
+            .order_by("-position")
             .first()
         )
 
     def next_course_point(self):
         return (
             CoursePoint.objects.filter(course=self.course, position__gt=self.position)
-            .order_by("-position")
+            .order_by("position")
             .first()
         )
