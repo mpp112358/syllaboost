@@ -105,12 +105,15 @@ def parse_org(
                     db_tag, created = Tag.objects.get_or_create(name=tag)
                     point.tags.add(db_tag)
                     point.save()
-                coursepoint, created = CoursePoint.objects.get_or_create(
-                    course=course, point=point
+                if CoursePoint.objects.filter(course=course, point=point).exists():
+                    CoursePoint.objects.filter(course=course, point=point).delete()
+                coursepoint = CoursePoint(
+                    course=course,
+                    point=point,
+                    position=point_position,
+                    state=state,
+                    unit=unit,
                 )
-                coursepoint.position = point_position
-                coursepoint.state = state
-                coursepoint.unit = unit
                 coursepoint.save()
 
     return {"status": "ok"}
