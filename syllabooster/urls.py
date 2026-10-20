@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from django.urls import path
+from django.contrib.auth.views import LogoutView
 
 from . import views
 
@@ -8,6 +9,7 @@ app_name = "syllabooster"
 urlpatterns = [
     path("", views.index, name="index"),
     path("unauthorised/", views.unauthorised, name="unauthorised"),
+    path("logout/", LogoutView.as_view(), name="logout"),
     path("courselist/", views.CourseListView.as_view(), name="courselist"),
     path("unitlist/<course>/", views.UnitListView.as_view(), name="unitlist"),
     path("unit/<course>/<unit>/", views.UnitView.as_view(), name="unit"),
