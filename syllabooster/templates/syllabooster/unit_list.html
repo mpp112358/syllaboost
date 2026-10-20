@@ -12,10 +12,7 @@
             <a class="max center-align button square transparent" href="{% url 'syllabooster:currentunit' course.id %}">
                 <h6 class="max center-align">{{ course.name }}</h6>
             </a>
-            <form method="post" action="{% url 'syllaboost:logout' %}">
-                {% csrf_token %}
                 <button class="circle transparent"><i>account_circle</i></button>
-            </form>
         </nav>
     </header>
     <nav class="max">
